@@ -11,7 +11,7 @@ export default function HeaderBranchBranchLists() {
   }
 
   return (
-    <ul>
+    <ul className="flex p-5">
       <li>
         <p>백화점</p>
         <ul>
