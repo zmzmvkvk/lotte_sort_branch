@@ -3,7 +3,7 @@ import { useQuery } from "@tanstack/react-query";
 import { getBranches } from "../../api/branch";
 
 export default function Results({ text }) {
-  const [selected, setSelected] = useState();
+  const [sortedText, setSortedText] = useState();
 
   const { isLoading, data } = useQuery({ queryKey: ["branches"], queryFn: getBranches });
   const branches = data ? Object.entries(data)[0][1] : [];
@@ -20,11 +20,16 @@ export default function Results({ text }) {
   // console.log(branches);
   const sorted =
     branchNames &&
-    branchNames.map((keyword) => {
-      const baseKeyword = keyword.replace(/점$/, "");
-      const pattern = new RegExp(baseKeyword + "(점)?$", "i");
-      console.log(pattern);
-    });
+    branchNames
+      .map((keyword) => {
+        const baseKeyword = keyword.replace(/점$/, "");
+        const pattern = new RegExp(baseKeyword + "(점)?$", "i");
+
+        return branches.find((branch) => pattern.test(branch.branch));
+      })
+      .sort((a, b) => a.id - b.id);
+
+  console.log(sorted);
   return (
     <div>
       <p>Results</p>
