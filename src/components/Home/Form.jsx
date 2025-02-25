@@ -1,0 +1,21 @@
+import React, { useState } from "react";
+
+export default function Form({ onSubmitHandler }) {
+  const [text, setText] = useState();
+
+  const handleChange = (e) => {
+    setText(e.target.value);
+  };
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    text.trim() && onSubmitHandler(text);
+  };
+
+  return (
+    <form onSubmit={handleSubmit} className="flex mb-10">
+      <textarea placeholder="지점 이름을 입력하세요 (예: 전주점, 잠실점, 기흥점, 동탄점)" className="bg-white w-10/11 h-30 text-black p-2 max-h-40 min-h-20" onChange={handleChange} />
+      <button className="p-5 ml-5 border-2 border-gray-50 hover:cursor-pointer">확인</button>
+    </form>
+  );
+}
