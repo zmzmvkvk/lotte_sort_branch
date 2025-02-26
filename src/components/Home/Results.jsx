@@ -7,12 +7,8 @@ export default function Results({ text }) {
 
   const { isLoading, data } = useQuery({ queryKey: ["branches"], queryFn: getBranches });
   const branches = data ? Object.entries(data)[0][1] : [];
-  const branchNames =
-    text &&
-    text
-      .split(",")
-      .map((branch) => branch.trim())
-      .filter((branch) => branch !== "");
+  const branchNames = text && text.split(",").map((branch) => branch.trim());
+  // .filter((branch) => branch !== "");
 
   // console.log((branch = { id: 55, branch: "진주점", type: "쇼핑몰", type2: "" }));
   // console.log(branchNames = 본점,부여점,센텀시티점,잠실점,군산점,서울역점,수원점,관악점,건대스타시티점);
@@ -23,13 +19,26 @@ export default function Results({ text }) {
     branchNames
       .map((keyword) => {
         const baseKeyword = keyword.replace(/점$/, "");
-        const pattern = new RegExp(baseKeyword + "(점)?$", "i");
+        const pattern = new RegExp(baseKeyword, "i");
+        // const pattern = new RegExp(baseKeyword + "(점)?$", "i");
+        const result = branches.find((branch) => pattern.test(branch.branch));
 
-        return branches.find((branch) => pattern.test(branch.branch));
+        // if (result == undefined) {
+        //   const pattern2 = new RegExp(baseKeyword, "i");
+        //   const result2 = branches.find((branch) => pattern2.test(branch.branch));
+
+        //   return result2;
+        // }
+        return result;
       })
       .sort((a, b) => a.id - b.id);
 
-  console.log(sorted);
+  sorted &&
+    sorted.map((v) => {
+      const result = Object.values(v)[1];
+      console.log(result);
+    });
+
   return (
     <div>
       <p>Results</p>
