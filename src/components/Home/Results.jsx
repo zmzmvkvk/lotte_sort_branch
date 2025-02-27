@@ -1,58 +1,58 @@
-import React, { useState } from "react";
-import { useQuery } from "@tanstack/react-query";
-import { getBranches } from "../../api/branch";
+import { useRef, useState } from "react";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
-export default function Results({ text }) {
-  const [sortedText, setSortedText] = useState();
+export default function Results({ text, total }) {
+  const [status, setStatus] = useState({ total, split: "," });
+  const result = useRef(text);
 
-  const { isLoading, data } = useQuery({ queryKey: ["branches"], queryFn: getBranches });
-  const branches = data ? Object.entries(data)[0][1] : [];
-  const branchNames = text && text.split(",").map((branch) => branch.trim());
-  // .filter((branch) => branch !== "");
+  const notify = () => {
+    navigator.clipboard.writeText(result.current.innerText);
+    toast("복사가 완료되었습니다");
+  };
 
-  // console.log((branch = { id: 55, branch: "진주점", type: "쇼핑몰", type2: "" }));
-  // console.log(branchNames = 본점,부여점,센텀시티점,잠실점,군산점,서울역점,수원점,관악점,건대스타시티점);
+  const selectList = [
+    { value: ",", name: "구분자 , (콤마)" },
+    { value: "/", name: "구분자 / (슬래시)" },
+    { value: "·", name: "구분자 · (가운뎃점)" },
+  ];
 
-  // console.log(branches);
-  const sorted =
-    branchNames &&
-    branchNames
-      .map((keyword) => {
-        const baseKeyword = keyword.replace(/점$/, "");
-        const pattern = new RegExp(baseKeyword, "i");
-        // const pattern = new RegExp(baseKeyword + "(점)?$", "i");
-        const result = branches.find((branch) => pattern.test(branch.branch));
-
-        // if (result == undefined) {
-        //   const pattern2 = new RegExp(baseKeyword, "i");
-        //   const result2 = branches.find((branch) => pattern2.test(branch.branch));
-
-        //   return result2;
-        // }
-        return result;
-      })
-      .sort((a, b) => a.id - b.id);
-
-  sorted &&
-    sorted.map((v) => {
-      const result = Object.values(v)[1];
-      console.log(result);
-    });
+  const handleStatus = (e) => {
+    setStatus({ total, split: e.target.value });
+  };
 
   return (
     <div>
-      <p>Results</p>
+      <span className="text-3xl">Result</span>
+      <span className="ml-2 text-xl">
+        총 <span className="text-red-500">{total}</span>개 지점
+      </span>
       <div className="flex-wrap">
-        <select>
-          <option className="bg-zinc-700">구분자 , (콤마)</option>
-          <option className="bg-zinc-700">구분자 / (슬래시)</option>
-          <option className="bg-zinc-700">구분자 · (가운뎃점)</option>
+        <select className="my-3 border-1 rounded-xl p-1" onChange={handleStatus}>
+          {selectList.map((item) => (
+            <option className="bg-zinc-700" value={item.value} key={item.value}>
+              {item.name}
+            </option>
+          ))}
         </select>
         <div className="flex scroll-auto">
-          <div className="w-10/11 h-60 bg-white"></div>
-          <button className="indivne-block p-5 ml-5 border-2 border-gray-50 hover:cursor-pointer">복사</button>
+          <div id="text" className="w-10/11 min-h-60 bg-white text-black p-2" ref={result}>
+            {text.map((v, i) => {
+              return (
+                <span className="text-xl" key={i}>
+                  {v == "구리점" ? <i className="text-red-500 font-bold not-italic">{v}</i> : <i className="not-italic">{v}</i>}
+                  {i + 1 !== total && status.split == "," ? <span>{status.split} </span> : i + 1 !== total && <span> {status.split} </span>}
+                </span>
+              );
+            })}
+          </div>
+          <button className="indivne-block p-5 ml-5 border-2 border-gray-50 hover:cursor-pointer" onClick={notify}>
+            복사
+          </button>
         </div>
       </div>
+
+      <ToastContainer position="top-center" autoClose={2500} hideProgressBar />
     </div>
   );
 }
