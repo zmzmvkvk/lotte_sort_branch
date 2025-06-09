@@ -77,10 +77,10 @@ export default function Home() {
         </label>
         <select id="sortMode" className="border px-2 rounded-xl py-1" value={sortMode} onChange={(e) => setSortMode(e.target.value)}>
           <option className="bg-zinc-700" value="default">
-            기본 순서 (지점 id 기준)
+            지점명 정렬
           </option>
           <option className="bg-zinc-700" value="korean">
-            ㄱㄴㄷabc123 정렬
+            브랜드명 정렬
           </option>
         </select>
       </div>
