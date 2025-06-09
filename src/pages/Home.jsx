@@ -69,8 +69,6 @@ export default function Home() {
 
   return (
     <div className="p-5">
-      <Form onSubmitHandler={submitHandler} />
-
       <div className="mb-5">
         <label htmlFor="sortMode" className="mr-3 font-bold">
           정렬 방식:
@@ -85,6 +83,7 @@ export default function Home() {
         </select>
       </div>
 
+      <Form onSubmitHandler={submitHandler} />
       <Results text={sortedText} total={sortedText.length} />
 
       {errorText.length > 0 && sortMode === "default" && (
