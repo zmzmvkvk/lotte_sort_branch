@@ -31,7 +31,7 @@ export default function Home() {
 
   const submitHandler = (text) => {
     const rawList = text
-      .split(/[/,·|?:&*.]/)
+      .split(/[/,·]/)
       .map((v) => v.trim())
       .filter(Boolean);
 
